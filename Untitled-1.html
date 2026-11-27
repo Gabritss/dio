@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoUrbis - Central de Atendimento Cidadão (Água & Luz)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                            dark: '#0a2540',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-brand-dark text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('denuncias')">
+                    <div class="bg-teal-500 p-2.5 rounded-xl shadow-md text-slate-900">
+                        <i class="fa-solid fa-city text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-xl tracking-tight text-white flex items-center gap-2">
+                            EcoUrbis <span class="text-xs bg-teal-500/20 text-teal-300 font-normal px-2 py-0.5 rounded-full border border-teal-500/30">Ouvidoria Smart</span>
+                        </h1>
+                        <p class="text-xs text-slate-400">Plataforma Integrada de Serviços Públicos (Água e Luz)</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="flex space-x-2 bg-slate-800/60 p-1.5 rounded-xl border border-slate-700">
+                    <button id="tab-btn-denuncias" onclick="switchTab('denuncias')" 
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-teal-600 text-white shadow">
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <span>Central de Chamados</span>
+                    </button>
+                    <button id="tab-btn-info" onclick="switchTab('info')" 
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-700/50">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>Sobre o Projeto & Legislação</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ========================================== -->
+        <!-- TAB 1: CENTRAL DE DENÚNCIAS E ATENDIMENTO -->
+        <!-- ========================================== -->
+        <section id="section-denuncias" class="fade-in space-y-8">
+            
+            <!-- Hero Banner / Subtitle -->
+            <div class="bg-gradient-to-r from-brand-dark to-slate-800 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-slate-700">
+                <div class="relative z-10 max-w-3xl">
+                    <span class="bg-teal-500/20 text-teal-300 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider border border-teal-500/30">Canal Único de Fiscalização</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold mt-3 mb-2">Relate falhas de saneamento, iluminação e falta de atendimento</h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Sua denúncia é enviada diretamente com geolocalização e fotos para o órgão regulador e prefeitura, garantindo cobrança efetiva sobre as concessionárias de água e energia.
+                    </p>
+                </div>
+                <i class="fa-solid fa-shield-halved absolute -right-6 -bottom-6 text-9xl text-white/5 pointer-events-none"></i>
+            </div>
+
+            <!-- Dashboard Stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total de Ocorrências</p>
+                        <h3 id="stat-total" class="text-2xl font-bold text-slate-800 mt-1">4</h3>
+                    </div>
+                    <div class="bg-blue-50 text-blue-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-folder-open text-xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Em Análise / Atendimento</p>
+                        <h3 id="stat-analise" class="text-2xl font-bold text-amber-600 mt-1">2</h3>
+                    </div>
+                    <div class="bg-amber-50 text-amber-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-clock-rotate-left text-xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Resolvidas</p>
+                        <h3 id="stat-resolvidas" class="text-2xl font-bold text-emerald-600 mt-1">2</h3>
+                    </div>
+                    <div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-circle-check text-xl"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tempo Médio Resposta</p>
+                        <h3 class="text-2xl font-bold text-slate-800 mt-1">18 hrs</h3>
+                    </div>
+                    <div class="bg-teal-50 text-teal-600 p-3 rounded-xl">
+                        <i class="fa-solid fa-bolt text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Interactive Section (Form + Table) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Registration Form (5 Cols) -->
+                <div class="lg:col-span-5 bg-white p-6 sm:p-7 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <div class="flex items-center justify-between mb-6 pb-3 border-b border-slate-100">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-teal-600"></i>
+                            Novo Chamado / Denúncia
+                        </h3>
+                        <span class="text-xs text-slate-400 font-medium">* Campos obrigatórios</span>
+                    </div>
+
+                    <form id="form-chamado" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                        
+                        <!-- Tipo de Serviço -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Serviço Afetado *</label>
+                            <select id="input-servico" required onchange="updateOcorrenciaOptions()" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 p-3 transition">
+                                <option value="">Selecione o serviço...</option>
+                                <option value="Água / Saneamento">Água / Saneamento (Sabesp / BRK / DAE)</option>
+                                <option value="Energia Elétrica">Energia Elétrica / Luz (Enel / CPFL)</option>
+                                <option value="Ouvidoria Geral">Falta de Atendimento da Concessionária (Ouvidoria)</option>
+                            </select>
+                        </div>
+
+                        <!-- Tipo de Ocorrência -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Tipo de Ocorrência *</label>
+                            <select id="input-ocorrencia" required class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 p-3 transition">
+                                <option value="">Selecione o serviço primeiro...</option>
+                            </select>
+                        </div>
+
+                        <!-- Endereço com GPS Simulador -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Endereço Completo *</label>
+                                <button type="button" onclick="getSimulatedLocation()" class="text-xs text-teal-700 hover:text-teal-800 font-semibold flex items-center gap-1">
+                                    <i class="fa-solid fa-location-crosshairs"></i> Usar Meu GPS
+                                </button>
+                            </div>
+                            <input type="text" id="input-endereco" required placeholder="Ex: Av. Portugal, 450 - Bairro Matriz, Mauá/SP" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 p-3 transition">
+                        </div>
+
+                        <!-- Descrição detalhada -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Descrição do Problema *</label>
+                            <textarea id="input-descricao" rows="3" required placeholder="Descreva o vazamento, apagoes frequentes ou o descaso no canal da empresa..." class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 p-3 transition"></textarea>
+                        </div>
+
+                        <!-- Upload Simulado -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Anexo / Foto do Local (Opcional)</label>
+                            <div class="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center bg-slate-50 hover:bg-slate-100 transition cursor-pointer relative" onclick="document.getElementById('file-upload').click()">
+                                <input type="file" id="file-upload" class="hidden" onchange="handleFileSelected(this)">
+                                <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400 mb-1"></i>
+                                <p id="upload-label" class="text-xs text-slate-500 font-medium">Clique para anexar imagem ou comprovante</p>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-teal-600/30 transition duration-200 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Registrar Denúncia Oficial</span>
+                        </button>
+
+                    </form>
+                </div>
+
+                <!-- Live Monitoring Table (7 Cols) -->
+                <div class="lg:col-span-7 bg-white p-6 sm:p-7 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-teal-600"></i>
+                                Central de Acompanhamento
+                            </h3>
+                            <p class="text-xs text-slate-500">Monitore o status e a resolutividade dos chamados em tempo real</p>
+                        </div>
+
+                        <!-- Filter options -->
+                        <div class="flex items-center gap-2">
+                            <select id="filter-status" onchange="renderTable()" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded-lg p-2 font-medium focus:ring-teal-500 focus:border-teal-500">
+                                <option value="TODOS">Todos os Status</option>
+                                <option value="Registrado">Registrado</option>
+                                <option value="Em Análise">Em Análise</option>
+                                <option value="Resolvido">Resolvido</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-sm"></i>
+                        <input type="text" id="search-input" onkeyup="renderTable()" placeholder="Buscar por protocolo, bairro ou tipo de problema..." class="w-full bg-slate-50 pl-9 pr-4 py-2 border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-teal-500 focus:border-teal-500">
+                    </div>
+
+                    <!-- Table Responsive Container -->
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left text-xs text-slate-600">
+                            <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[11px] tracking-wider border-b border-slate-200">
+                                <tr>
+                                    <th class="py-3 px-3">Protocolo</th>
+                                    <th class="py-3 px-3">Serviço / Tipo</th>
+                                    <th class="py-3 px-3">Localização</th>
+                                    <th class="py-3 px-3">Status</th>
+                                    <th class="py-3 px-3 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body" class="divide-y divide-slate-100 font-medium">
+                                <!-- Dynamic Rows Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: PÁGINA INFORMATIVA E FUNDAMENTAÇÃO -->
+        <!-- ========================================== -->
+        <section id="section-info" class="fade-in space-y-10 hidden">
+            
+            <!-- Intro & Motivations -->
+            <div class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <span class="text-teal-600 text-xs font-bold uppercase tracking-widest">Fundamentação Estratégica</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Por que uma Central Unificada do Poder Público?</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200/60">
+                        <div class="w-10 h-10 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold mb-3 text-lg">
+                            <i class="fa-solid fa-gavel"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-base mb-2">Poder de Fiscalização</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Quando o cidadão reclama apenas dentro da própria concessionária privada, a empresa controla a métrica. Ao intermediar pelo Governo, o descumprimento vira prova para a aplicação de multas rescisórias e regulatórias.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200/60">
+                        <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold mb-3 text-lg">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-base mb-2">Métricas de Transparência</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Consolidação de dados abertos e mapas de calor de vazamentos e apagões, impedindo que concessionárias de saneamento ou luz disfarcem o tempo real de atendimento às comunidades.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200/60">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold mb-3 text-lg">
+                            <i class="fa-solid fa-sitemap"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-base mb-2">Visão de Zeladoria Urbana</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Um vazamento de água destrói o asfalto da Prefeitura. A falta de iluminação gera insegurança pública. Os problemas de infraestrutura são transversais e exigem gestão pública unificada.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE INFOGRAPHIC / WORKFLOW -->
+            <div class="bg-gradient-to-br from-slate-900 to-brand-dark p-8 rounded-2xl text-white shadow-xl space-y-8">
+                <div class="text-center max-w-2xl mx-auto">
+                    <span class="bg-teal-500/20 text-teal-300 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider border border-teal-500/30">Arquitetura de Dados</span>
+                    <h3 class="text-2xl font-bold mt-2">Jornada da Informação numa Smart City</h3>
+                    <p class="text-slate-300 text-xs mt-1">Como o dado trafega desde o registro no app até a fiscalização municipal</p>
+                </div>
+
+                <!-- Process Steps Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
+                    
+                    <!-- Step 1 -->
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 text-center relative flex flex-col justify-between">
+                        <div class="bg-teal-500 text-slate-950 w-7 h-7 font-bold rounded-full flex items-center justify-center mx-auto mb-3 text-xs">1</div>
+                        <i class="fa-solid fa-mobile-screen-button text-2xl text-teal-400 mb-2"></i>
+                        <h5 class="font-bold text-xs text-white">Registro Cidadão</h5>
+                        <p class="text-[11px] text-slate-400 mt-1">Cidadão relata o problema no app com fotos e GPS.</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 text-center relative flex flex-col justify-between">
+                        <div class="bg-teal-500 text-slate-950 w-7 h-7 font-bold rounded-full flex items-center justify-center mx-auto mb-3 text-xs">2</div>
+                        <i class="fa-solid fa-server text-2xl text-blue-400 mb-2"></i>
+                        <h5 class="font-bold text-xs text-white">Servidor da Ouvidoria</h5>
+                        <p class="text-[11px] text-slate-400 mt-1">Validação do protocolo e cruzamento de duplicidades.</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 text-center relative flex flex-col justify-between">
+                        <div class="bg-teal-500 text-slate-950 w-7 h-7 font-bold rounded-full flex items-center justify-center mx-auto mb-3 text-xs">3</div>
+                        <i class="fa-solid fa-database text-2xl text-purple-400 mb-2"></i>
+                        <h5 class="font-bold text-xs text-white">Banco de Dados Público</h5>
+                        <p class="text-[11px] text-slate-400 mt-1">Geração de histórico oficial e contagem de SLA legal.</p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 text-center relative flex flex-col justify-between">
+                        <div class="bg-teal-500 text-slate-950 w-7 h-7 font-bold rounded-full flex items-center justify-center mx-auto mb-3 text-xs">4</div>
+                        <i class="fa-solid fa-truck-field text-2xl text-amber-400 mb-2"></i>
+                        <h5 class="font-bold text-xs text-white">Despacho à Concessionária</h5>
+                        <p class="text-[11px] text-slate-400 mt-1">Notificação via API direta para a equipe de campo da Enel/Sabesp.</p>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 text-center relative flex flex-col justify-between">
+                        <div class="bg-teal-500 text-slate-950 w-7 h-7 font-bold rounded-full flex items-center justify-center mx-auto mb-3 text-xs">5</div>
+                        <i class="fa-solid fa-square-check text-2xl text-emerald-400 mb-2"></i>
+                        <h5 class="font-bold text-xs text-white">Fiscalização & Baixa</h5>
+                        <p class="text-[11px] text-slate-400 mt-1">Encerramento mediante confirmação do morador e vistoria.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- LEGAL FRAMEWORK CARD -->
+            <div class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
+                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-scale-balanced text-teal-600"></i>
+                    Amparo Legal & Direitos do Usuário
+                </h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    A criação desta central de mediação e fiscalização apoia-se em quatro pilares da legislação brasileira:
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3">
+                        <i class="fa-solid fa-book-bookmark text-teal-600 mt-1"></i>
+                        <div>
+                            <h5 class="font-bold text-xs text-slate-800">Constituição Federal (Art. 175)</h5>
+                            <p class="text-[11px] text-slate-600 mt-0.5">Incumbe ao Poder Público a prestação de serviços públicos, devendo assegurar atendimento adequado e manutenção da qualidade.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3">
+                        <i class="fa-solid fa-file-contract text-teal-600 mt-1"></i>
+                        <div>
+                            <h5 class="font-bold text-xs text-slate-800">Lei dos Serviços Públicos (Lei 8.987/95)</h5>
+                            <p class="text-[11px] text-slate-600 mt-0.5">Garante ao usuário o direito de peticionar e obter respostas rápidas das agências reguladoras sobre serviços concedidos.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3">
+                        <i class="fa-solid fa-user-shield text-teal-600 mt-1"></i>
+                        <div>
+                            <h5 class="font-bold text-xs text-slate-800">Código de Defesa do Consumidor (CDC)</h5>
+                            <p class="text-[11px] text-slate-600 mt-0.5">Equipara os serviços públicos essenciais a relações de consumo, exigindo continuidade e reparação por falhas de atendimento.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3">
+                        <i class="fa-solid fa-lock text-teal-600 mt-1"></i>
+                        <div>
+                            <h5 class="font-bold text-xs text-slate-800">LGPD (Lei 13.709/2018 - Art. 7º, III)</h5>
+                            <p class="text-[11px] text-slate-600 mt-0.5">Autoriza expressamente o tratamento de dados pessoais pela administração pública para a execução de políticas públicas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ SECTION -->
+            <div class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2 mb-6">
+                    <i class="fa-solid fa-circle-question text-teal-600"></i>
+                    Perguntas Frequentes (FAQ)
+                </h3>
+
+                <div class="space-y-3">
+                    <details class="group bg-slate-50 p-4 rounded-xl border border-slate-200 cursor-pointer">
+                        <summary class="font-bold text-xs text-slate-800 flex justify-between items-center">
+                            <span>Por que registrar o problema aqui e não diretamente no SAC da concessionária?</span>
+                            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition"></i>
+                        </summary>
+                        <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+                            Registrar pelo portal da prefeitura gera prova auditável de omissão ou demora. A concessionária passa a responder formalmente ao órgão regulador, sujeitando-se a multas se descumprir os prazos regulamentados.
+                        </p>
+                    </details>
+
+                    <details class="group bg-slate-50 p-4 rounded-xl border border-slate-200 cursor-pointer">
+                        <summary class="font-bold text-xs text-slate-800 flex justify-between items-center">
+                            <span>O descaso de atendimento piorou com a privatização dos serviços?</span>
+                            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition"></i>
+                        </summary>
+                        <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+                            A privatização visou atração de investimentos, mas a substituição de atendentes por robôs automatizados ineficientes visando corte de custos reduziu a qualidade da escuta direta do cidadão. Uma central pública unificada corrige essa distorção.
+                        </p>
+                    </details>
+
+                    <details class="group bg-slate-50 p-4 rounded-xl border border-slate-200 cursor-pointer">
+                        <summary class="font-bold text-xs text-slate-800 flex justify-between items-center">
+                            <span>Como funciona o envio de fotos e geolocalização no sistema?</span>
+                            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition"></i>
+                        </summary>
+                        <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+                            A geolocalização é convertida em coordenadas de latitude e longitude que alimentam a ordem de serviço da equipe de rua. As fotos anexadas servem de evidência visual para agilizar a triagem do reparo.
+                        </p>
+                    </details>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- MODAL DE DETALHES DE PROTOCOLO -->
+    <div id="modal-detalhes" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 fade-in">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <h4 class="font-bold text-slate-800 text-base" id="modal-title">Detalhes da Ocorrência</h4>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="modal-content" class="space-y-3 text-xs text-slate-600">
+                <!-- Injected via JS -->
+            </div>
+            <div class="pt-3 border-t border-slate-100 flex justify-end gap-2">
+                <button onclick="closeModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl text-xs">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>EcoUrbis - Projeto de Pesquisa & Solução Tecnológica em Serviços Públicos | Etec Mauá</p>
+            <p class="text-slate-500 text-[11px]">Desenvolvido para o Grupo 5 (Serviços Públicos: Luz/Água) - Todos os Direitos Reservados</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Initial Mock Database
+        let chamados = [
+            {
+                protocolo: "#ECO-8492",
+                servico: "Água / Saneamento",
+                ocorrencia: "Vazamento de Água Limpa na Via",
+                endereco: "Rua Dom José Gaspar, 320 - Bairro Matriz",
+                descricao: "Vazamento de grande porte jorrando água potável na calçada há mais de 24 horas sem atendimento da empresa.",
+                status: "Registrado",
+                data: "05/11/2026 14:30",
+                anexo: "vazamento_rua.jpg"
+            },
+            {
+                protocolo: "#ECO-7311",
+                servico: "Energia Elétrica",
+                ocorrencia: "Queda Frequente de Energia / Apagão",
+                endereco: "Av. Barão de Mauá, 1250 - Vila Noêmia",
+                descricao: "Três oscilações graves seguidas de apagão por mais de 6 horas. Central telefônica da distribuidora sem sinal.",
+                status: "Em Análise",
+                data: "05/11/2026 11:15",
+                anexo: "Sem anexo"
+            },
+            {
+                protocolo: "#ECO-6104",
+                servico: "Energia Elétrica",
+                ocorrencia: "Lâmpada de Poste Apagada (Escuridão)",
+                endereco: "Rua Portugal, 88 - Parque das Américas",
+                descricao: "Iluminação pública inoperante gerando alto risco de segurança para estudantes durante a noite.",
+                status: "Resolvido",
+                data: "04/11/2026 09:20",
+                anexo: "poste_escuro.png"
+            },
+            {
+                protocolo: "#ECO-5029",
+                servico: "Ouvidoria Geral",
+                ocorrencia: "Falta de Atendimento / Descaso no SAC",
+                endereco: "Rua do Comércio, 45 - Centro",
+                descricao: "Tentativa de cancelamento de taxa indevida sem sucesso após 5 chamados encerrados unilateralmente.",
+                status: "Resolvido",
+                data: "03/11/2026 16:45",
+                anexo: "print_sac.png"
+            }
+        ];
+
+        let selectedFile = null;
+
+        // Ocorrência options mapping
+        const ocorrenciaOptions = {
+            "Água / Saneamento": [
+                "Vazamento de Água Limpa na Via",
+                "Esgoto a Céu Aberto",
+                "Falta de Água Consistente",
+                "Cobrança Indevida na Conta de Água",
+                "Falta de Atendimento da Concessionária"
+            ],
+            "Energia Elétrica": [
+                "Queda Frequente de Energia / Apagão",
+                "Fio de Alta Tensão Partido",
+                "Lâmpada de Poste Apagada (Escuridão)",
+                "Variação de Tensão (Queima de Aparelhos)",
+                "Falta de Atendimento da Concessionária"
+            ],
+            "Ouvidoria Geral": [
+                "Falta de Atendimento / Descaso no SAC",
+                "Demora Excessiva na Conclusão de Obras",
+                "Cobrança Abusiva / Erro de Leitura"
+            ]
+        };
+
+        // Tab Switching Logic
+        function switchTab(tab) {
+            const secDenuncias = document.getElementById('section-denuncias');
+            const secInfo = document.getElementById('section-info');
+            const btnDenuncias = document.getElementById('tab-btn-denuncias');
+            const btnInfo = document.getElementById('tab-btn-info');
+
+            if (tab === 'denuncias') {
+                secDenuncias.classList.remove('hidden');
+                secInfo.classList.add('hidden');
+                btnDenuncias.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-teal-600 text-white shadow";
+                btnInfo.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-700/50";
+            } else {
+                secDenuncias.classList.add('hidden');
+                secInfo.classList.remove('hidden');
+                btnInfo.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-teal-600 text-white shadow";
+                btnDenuncias.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-700/50";
+            }
+        }
+
+        // Dynamically update dropdown options
+        function updateOcorrenciaOptions() {
+            const servico = document.getElementById('input-servico').value;
+            const ocorrenciaSelect = document.getElementById('input-ocorrencia');
+            ocorrenciaSelect.innerHTML = '<option value="">Selecione o tipo de problema...</option>';
+
+            if (servico && ocorrenciaOptions[servico]) {
+                ocorrenciaOptions[servico].forEach(op => {
+                    const opt = document.createElement('option');
+                    opt.value = op;
+                    opt.textContent = op;
+                    ocorrenciaSelect.appendChild(opt);
+                });
+            }
+        }
+
+        // GPS Simulator
+        function getSimulatedLocation() {
+            const simulatedAddresses = [
+                "Av. João Ramalho, 350 - Vila Noêmia, Mauá/SP",
+                "Rua Campo Grande, 110 - Parque das Américas, Mauá/SP",
+                "Rua Papa João XXIII, 520 - Bairro Sertãozinho, Mauá/SP"
+            ];
+            const randomAddr = simulatedAddresses[Math.floor(Math.random() * simulatedAddresses.length)];
+            document.getElementById('input-endereco').value = randomAddr + " (GPS Capturado)";
+        }
+
+        // File upload UI feedback
+        function handleFileSelected(input) {
+            if (input.files && input.files[0]) {
+                selectedFile = input.files[0].name;
+                document.getElementById('upload-label').textContent = "Arquivo: " + selectedFile;
+            }
+        }
+
+        // Form Submit Handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const servico = document.getElementById('input-servico').value;
+            const ocorrencia = document.getElementById('input-ocorrencia').value;
+            const endereco = document.getElementById('input-endereco').value;
+            const descricao = document.getElementById('input-descricao').value;
+            const protocolo = "#ECO-" + Math.floor(1000 + Math.random() * 9000);
+            
+            const now = new Date();
+            const dataStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+            const novoChamado = {
+                protocolo: protocolo,
+                servico: servico,
+                ocorrencia: ocorrencia,
+                endereco: endereco,
+                descricao: descricao,
+                status: "Registrado",
+                data: dataStr,
+                anexo: selectedFile || "Sem anexo"
+            };
+
+            chamados.unshift(novoChamado);
+            renderTable();
+            updateStats();
+
+            // Reset form
+            document.getElementById('form-chamado').reset();
+            document.getElementById('upload-label').textContent = "Clique para anexar imagem ou comprovante";
+            selectedFile = null;
+
+            alert(`✅ Chamado ${protocolo} registrado com sucesso! O órgão regulador já foi notificado.`);
+        }
+
+        // Render Table & Filter logic
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            const statusFilter = document.getElementById('filter-status').value;
+            const searchKeyword = document.getElementById('search-input').value.toLowerCase();
+
+            tbody.innerHTML = '';
+
+            const filtered = chamados.filter(item => {
+                const matchStatus = statusFilter === 'TODOS' || item.status === statusFilter;
+                const matchSearch = item.protocolo.toLowerCase().includes(searchKeyword) ||
+                                    item.endereco.toLowerCase().includes(searchKeyword) ||
+                                    item.ocorrencia.toLowerCase().includes(searchKeyword) ||
+                                    item.servico.toLowerCase().includes(searchKeyword);
+                return matchStatus && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">Nenhum chamado encontrado com estes critérios.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                let statusBadge = '';
+                if (item.status === 'Registrado') {
+                    statusBadge = `<span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2.5 py-1 rounded-full border border-blue-200">Registrado</span>`;
+                } else if (item.status === 'Em Análise') {
+                    statusBadge = `<span class="bg-amber-100 text-amber-700 text-[10px] font-bold px-2.5 py-1 rounded-full border border-amber-200">Em Análise</span>`;
+                } else {
+                    statusBadge = `<span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-200">Resolvido</span>`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-bold text-slate-800">${item.protocolo}</td>
+                    <td class="py-3 px-3">
+                        <div class="font-semibold text-slate-700">${item.servico}</div>
+                        <div class="text-[11px] text-slate-500">${item.ocorrencia}</div>
+                    </td>
+                    <td class="py-3 px-3 text-[11px] text-slate-600 max-w-[150px] truncate" title="${item.endereco}">${item.endereco}</td>
+                    <td class="py-3 px-3">${statusBadge}</td>
+                    <td class="py-3 px-3 text-center">
+                        <button onclick="openModal('${item.protocolo}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 rounded-lg text-xs transition" title="Ver detalhes">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button onclick="toggleStatus('${item.protocolo}')" class="bg-teal-50 hover:bg-teal-100 text-teal-700 p-2 rounded-lg text-xs transition ml-1" title="Alterar Status Simulador">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Stats counter update
+        function updateStats() {
+            document.getElementById('stat-total').textContent = chamados.length;
+            document.getElementById('stat-analise').textContent = chamados.filter(c => c.status === 'Em Análise' || c.status === 'Registrado').length;
+            document.getElementById('stat-resolvidas').textContent = chamados.filter(c => c.status === 'Resolvido').length;
+        }
+
+        // Toggle Status for demonstration
+        function toggleStatus(prot) {
+            const item = chamados.find(c => c.protocolo === prot);
+            if (item) {
+                if (item.status === 'Registrado') item.status = 'Em Análise';
+                else if (item.status === 'Em Análise') item.status = 'Resolvido';
+                else item.status = 'Registrado';
+
+                renderTable();
+                updateStats();
+            }
+        }
+
+        // Modal Handler
+        function openModal(prot) {
+            const item = chamados.find(c => c.protocolo === prot);
+            if (!item) return;
+
+            document.getElementById('modal-title').textContent = `Ocorrência ${item.protocolo}`;
+            document.getElementById('modal-content').innerHTML = `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <p><strong>Serviço:</strong> ${item.servico}</p>
+                    <p><strong>Problema:</strong> ${item.ocorrencia}</p>
+                    <p><strong>Data/Hora:</strong> ${item.data}</p>
+                </div>
+                <div>
+                    <strong class="block text-slate-700 mb-1">Endereço Registrado:</strong>
+                    <p class="bg-white p-2 rounded border border-slate-200">${item.endereco}</p>
+                </div>
+                <div>
+                    <strong class="block text-slate-700 mb-1">Descrição:</strong>
+                    <p class="bg-white p-2 rounded border border-slate-200">${item.descricao}</p>
+                </div>
+                <div>
+                    <strong class="block text-slate-700 mb-1">Anexo / Comprovante:</strong>
+                    <p class="text-teal-600 font-semibold"><i class="fa-solid fa-paperclip"></i> ${item.anexo}</p>
+                </div>
+            `;
+
+            const modal = document.getElementById('modal-detalhes');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal-detalhes');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Init on load
+        window.onload = function() {
+            renderTable();
+            updateStats();
+        }
+    </script>
+</body>
+</html>
